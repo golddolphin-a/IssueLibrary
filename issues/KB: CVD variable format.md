@@ -1,11 +1,12 @@
 ---
-ID: ISS-001
+ID: KB -001
 date: 2026-02-03
 status: solved  # or pending
 category: CVD function
 Architecture: all
 priority: medium  # high/medium/low
 tags: CVD, variable format, CVD config
+flags: self-study
 
 ---
 
