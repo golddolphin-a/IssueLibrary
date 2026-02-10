@@ -1,0 +1,49 @@
+# [flash script] flash script error 
+---
+## 메타데이터
+- ID: ISS-005
+- 날짜: 2026-02-10
+- Architecture: ARM Cortex-M0+ / ARM Cortex-M4 
+- 제품: CYT2BL
+- 빈도: 높음
+- 태그: #flash #script #CYT #elf #image #load #path #t32 #cmm
+---
+## 증상
+- script 실행 시 error 가 발생합니다. 
+- 에러 메시지
+  ```
+  Error : SYStem.CPU CYT2BL4-CM0+  Line: 27 file: C:\Users\kokim\Downloads\ITBC_fused.cmm
+  Error : IF COMBIPROBE()||UTRACE() Line: 28 file: ~~
+  ```
+  
+## 원인
+- 근본 원인 (CVD 관점) 
+  1. script 에서 define 한 CPU type 을 cvd 가 지원하지 않음 
+  2. t32 script 의 command 지원안함. eg.IF COMBIPROBE()||UTRACE()
+- 타겟 HW/SW 관점 : 
+
+## 해결
+1. 해결 방법 : 
+  - 상위 카테고리로 CPU 설정. CYT2BL ok, CYT2BL4 ng. 
+  - 지원 안하는 T32 command 주석 처리 
+2. 검증 방법 : SYStem.CPU CYT2BL 로 수정 후 script 실행 하여 확인
+3. 추가 체크 사항 : 보통 set 로 따라오는게 경로 지정임. 경로 지정이 제대로 되었는지 확인 
+```
+#틀린 설정 : & 불필요, path 경로 오류 
+&data.load.elf "output\itbc/itbc_asr_swp_app_R251215.elf"
+
+#정확한 설정
+data.load.elf F\output\itbc/itbc_asr_swp_app_R251215.elf
+```
+---
+
+## 💡 학습한 Knowledge
+### [관련 기술 1]
+
+
+### [관련 기술 2]
+
+## 관련 이슈
+
+
+## 참고 자료
