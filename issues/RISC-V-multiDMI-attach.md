@@ -1,55 +1,62 @@
-## title: Multi-DMI 환경에서 Cluster 1 코어 attach 실패
-category: RISC-V Debug
+---
+ID: ISS-004
+category: connect
+satus: solved #or pending
+Architecture: RISC-V
+priority: high
 tags: [multi-dmi, cluster, hartid, attach-fail, FPGA, debug-status-register]
-chipsets: [RISC-V multi-core (custom), FPGA validation environment]
-severity: high
-cvd_version: 5.0+
-customer: NXP (FPGA validation)
-last_updated: 2025-02-02
-related_issues: []
+flags: user issue #or self-study
+---
 
-### 📄 JTAG-RISCV-001: Multi-DMI 환경에서 Cluster 1 코어 attach 실패
+### RISC-V Multi-DMI 환경에서 Cluster 1 코어 attach 실패
+#### **1줄 요약**  
+- multi DMI 에서 cluster 1 core 연결 시 `system.config hartindex` command 로 설정 후 연결 가능. 
+- jtag-sel (hardware switch) 로 multi dmi의 core 선택 시 `system.config hartindex` command 필요없음.
+  jtag-sel 로 individual dmi 선택 하기 때문. 이런 design 에서 연결이 안될 경우 target 구현문제일 가능성 큼
 
 ## 증상
 
 - **유저 보고**: "Cluster 1 attach fail"
 - **CVD 동작**:
-    - Cluster 0 (ARM Cortex-A 또는 RISC-V Cluster 0) 코어는 정상 연결
+    - Cluster 0 코어는 정상 연결
     - RISC-V Cluster 1 코어 attach 시도 시 **연결 자체가 안 됨**
-    - CVD는 코어 상태를 "Running"으로 표시하며 attach 실패
-
+    - CVD는 코어 상태를 "Running"으로 표시하며 attach 실패 or sysdown 
 ---
 
 ## 즉시 시도할 해결책
 
-### Step 1: hartid 명시적 지정 (해결률: 90%)
+### Step 1: software multi dmi 구현 경우 hartid 명시적 지정 (해결률: 90%)
 
-**대부분의 경우 이것만으로 해결됩니다.**
+**실패 시 step 2.**
 
 CVD는 초기화 시 DMI 0 영역의 코어만 자동 인식합니다. Cluster 1 (DMI 1)의 hartid를 수동으로 지정해야 합니다.
 
 **시도:**
 ```bash
+# 명령어
+system.config hartindex <parameter>
+
+#사용 예제 
 sysdown
 system.config hartindex 8 9 10 11 12 13 14 15
 sysup
-attach
+
 ```
 
 ---
 
-### Step 2: 디버그 레지스터 동기화 확인 (해결률: 50%)
-
-**Step 1이 실패한 경우에만 시도하세요.**
+### Step 2: 디버그 레지스터 동기화 확인 
 
 **문제 가능성**: Hardware debug status register 동기화 지연/버그
 
-**진단 방법:**
+**진단 방법:**: dmcontrol register 로 hart halt 후 terminal 에서 hart 상태 확인 
 
-1. **Serial Terminal로 실제 코어 상태 확인**:
+1. **debug module register 로 hart halt request **:
+   - 
+3. **Serial Terminal로 실제 코어 상태 확인**:
    - UART console 또는 FPGA 내부 디버그 레지스터 직접 읽기
 
-2. **CVD에서 DMSTATUS 레지스터 읽기**:
+4. **CVD에서 DMSTATUS 레지스터 읽기**:
 ```bash
 riscv read_dmi 0x11  # DMSTATUS 주소
 # 출력 예: 0x00400382
