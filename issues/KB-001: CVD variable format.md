@@ -1,5 +1,5 @@
 ---
-ID: KB -001
+ID: KB-001
 date: 2026-02-03
 status: solved  # or pending
 category: CVD function
