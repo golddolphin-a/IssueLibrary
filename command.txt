@@ -1,11 +1,19 @@
-# 1. cvd-timeout.md 등록
-python review.py add cvd-timeout.md
+git command 
 
-# 2. 상태 확인
-python review.py list
+bash# 1. 원격 최신 상태 가져오기
+git fetch origin
 
-# 3. 오늘 복습할 거 확인
-python review.py check
+# 2. 로컬을 원격과 완전히 동일하게 (강제)
+git reset --hard origin/main
 
-# 4. 복습 완료 처리
-python review.py done cvd-timeout.md
+# 3. 확인
+ls issues/
+cat issues/ISS-001*
+
+또는 issues/ 폴더만 강제 pull
+bash# issues/ 폴더만 원격 버전으로 교체
+git fetch origin
+git checkout origin/main -- issues/
+
+
+
