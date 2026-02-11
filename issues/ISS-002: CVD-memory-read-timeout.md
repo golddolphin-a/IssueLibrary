@@ -71,8 +71,6 @@ data.dump EAPB:0x0++0x1f /long
 # Word 단위로 읽기
 data.dump UM:0x0--0x1f /word
 
-# 단일 주소만 확인
-data.dump EAPB:0x1000 /long
 ```
 
 **사용 시나리오:**
